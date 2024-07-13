@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-function start()
-{
+function start() {
     unset gid
     # accept "-G gid" option
     while getopts "G:" opt; do
         case ${opt} in
-            G) gid=${OPTARG};;
+        G) gid=${OPTARG} ;;
         esac
     done
     shift $(($OPTIND - 1))
@@ -28,8 +27,8 @@ function start()
     # prepare /etc/exports
     for i in "$@"; do
         # fsid=0: needed for NFSv4
-        echo "$i *(rw,fsid=0,sync,no_subtree_check,no_root_squash)" >> /etc/exports
-        if [ -v gid ] ; then
+        # echo "$i *(rw,fsid=0,sync,no_subtree_check,no_root_squash)" >> /etc/exports
+        if [ -v gid ]; then
             chmod 070 $i
             chgrp $gid $i
         fi
@@ -37,10 +36,11 @@ function start()
     done
 
     # start rpcbind if it is not started yet
-    /usr/sbin/rpcinfo 127.0.0.1 > /dev/null; s=$?
+    /usr/sbin/rpcinfo 127.0.0.1 >/dev/null
+    s=$?
     if [ $s -ne 0 ]; then
-       echo "Starting rpcbind"
-       /sbin/rpcbind -w
+        echo "Starting rpcbind"
+        /sbin/rpcbind -w
     fi
 
     mount -t nfsd nfds /proc/fs/nfsd
@@ -52,20 +52,20 @@ function start()
     # -G 10 to reduce grace time to 10 seconds (the lowest allowed)
     /usr/sbin/rpc.nfsd -G 10 -N 2 -V 3
     /sbin/rpc.statd --no-notify
+    /usr/sbin/rpc.nfsd -V 3
     echo "NFS started"
 }
 
-function stop()
-{
+function stop() {
     echo "Stopping NFS"
 
     /usr/sbin/rpc.nfsd 0
     /usr/sbin/exportfs -au
     /usr/sbin/exportfs -f
 
-    kill $( pidof rpc.mountd )
+    kill $(pidof rpc.mountd)
     umount /proc/fs/nfsd
-    echo > /etc/exports
+    # echo >/etc/exports
     exit 0
 }
 
