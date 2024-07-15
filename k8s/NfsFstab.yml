@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfs-fstab
+  namespace: nfs
+data:
+  fstab: |-
+    # UNCONFIGURED FSTAB FOR BASE SYSTEM
+    nfs-server:/exports	/mnt/test	nfs	nolock,hard,intr,nfsvers=3,tcp,rsize=1048576,wsize=1048576
