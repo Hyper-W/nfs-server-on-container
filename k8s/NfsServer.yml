@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-server
+  namespace: nfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-server
+  template:
+    metadata:
+      labels:
+        app: nfs-server
+    spec:
+      containers:
+        - name: nfs-server
+          image: nfs-server
+          securityContext:
+            capabilities:
+              add: ["SYS_ADMIN", "SYS_MODULE"]
+          ports:
+            - containerPort: 2049
+              protocol: TCP
+            - containerPort: 20048
+              protocol: TCP
+          volumeMounts:
+            - name: nfs-volumes
+              mountPath: /exports
+            - name: nfs-exports
+              mountPath: /etc
+              subPath: exports
+      volumes:
+        - name: nfs-volumes
+          persistentVolumeClaim:
+            claimName: nfs-volumes
+        - name: nfs-exports
+          configMap:
+            name: nfs-exports
+            items:
+              - key: exports
+                path: exports
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-server
+  namespace: nfs
+spec:
+  ports:
+    - name: NFS
+      port: 2049
+      protocol: TCP
+      targetPort: 2049
+    - name: mountd
+      port: 20048
+      protocol: TCP
+      targetPort: 20048
+  selector:
+    app: nfs-server
+  type: LoadBalancer

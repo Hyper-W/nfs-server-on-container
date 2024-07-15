@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-client
+  namespace: nfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-client
+  template:
+    metadata:
+      labels:
+        app: nfs-client
+    spec:
+      containers:
+        - name: nfs-client
+          image: nfs-client
+          tty: true
+          command:
+            - bash
+          securityContext:
+            capabilities:
+              add: ["SYS_ADMIN"]
+          volumeMounts:
+            - name: nfs-fstab
+              mountPath: /etc
+              subPath: fstab
+      volumes:
+        - name: nfs-volumes
+          persistentVolumeClaim:
+            claimName: nfs-volumes
+        - name: nfs-fstab
+          configMap:
+            name: nfs-fstab
+            items:
+              - key: fstab
+                path: fstab
