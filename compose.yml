@@ -2,7 +2,7 @@ services:
   nfs-server:
     build:
       context: ./nfs-server
-    image: nfs-server
+    image: ghcr.io/hyper-w/nfs-server-on-container/nfs-server
     container_name: nfs-server
     cap_add:
       - SYS_ADMIN
@@ -21,18 +21,18 @@ services:
     #   - "20048:20048"
   nfs-client:
     build:
-      context: ./nfs-client
+      context: ./nfs-client-on-container
       args:
         - USER=${USER:-user} # # Your User Name
         - USER_ID=${USER_ID:-1000} # Your User ID
         - GROUP_ID=${GROUP_ID:-1000} # Your GROUP ID
-    image: nfs-client
+    image: ghcr.io/hyper-w/nfs-client-on-container/nfs-client
     container_name: nfs-client
     cap_add:
       - SYS_ADMIN
     volumes:
       - type: bind
-        source: ./nfs-client/fstab
+        source: ./nfs-client-on-container/fstab
         target: /etc/fstab
     tty: true
     restart: always
