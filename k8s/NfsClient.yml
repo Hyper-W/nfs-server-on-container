@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nfs-client
-          image: nfs-client
+          image: ghcr.io/hyper-w/nfs-client-on-container/nfs-client
           tty: true
           command:
             - bash

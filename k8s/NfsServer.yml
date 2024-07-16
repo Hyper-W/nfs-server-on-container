@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nfs-server
-          image: nfs-server
+          image: ghcr.io/hyper-w/nfs-server-on-container/nfs-server
           securityContext:
             capabilities:
               add: ["SYS_ADMIN", "SYS_MODULE"]
