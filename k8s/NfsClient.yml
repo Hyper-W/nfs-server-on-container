@@ -24,7 +24,7 @@ spec:
               add: ["SYS_ADMIN"]
           volumeMounts:
             - name: nfs-fstab
-              mountPath: /etc
+              mountPath: /etc/fstab
               subPath: fstab
       volumes:
         - name: nfs-volumes
