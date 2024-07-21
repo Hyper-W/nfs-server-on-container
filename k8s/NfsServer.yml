@@ -17,8 +17,7 @@ spec:
         - name: nfs-server
           image: ghcr.io/hyper-w/nfs-server-on-container/nfs-server
           securityContext:
-            capabilities:
-              add: ["SYS_ADMIN", "SYS_MODULE"]
+            privileged: true
           ports:
             - containerPort: 2049
               protocol: TCP
@@ -28,7 +27,7 @@ spec:
             - name: nfs-volumes
               mountPath: /exports
             - name: nfs-exports
-              mountPath: /etc
+              mountPath: /etc/exports
               subPath: exports
       volumes:
         - name: nfs-volumes
