@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**.md'
+      - 'nfs-client-on-container/**'
   schedule:
     - cron: '0 0 * * *'
 
